@@ -202,11 +202,11 @@ Below are the steps to setup the enviroment and run the models:
     
     ii. Navigate to C:\terraform.
     
-    iii. To initialize type terraform init
+    iii. To initialize type **terraform init**
     
-    iv. To create a plan type terraform plan -out aws-ec2-s3-lambda-creation
+    iv. To create a plan type **terraform plan -out aws-ec2-s3-lambda-creation**
     
-    v. To apply the plan type terraform apply "aws-ec2-s3-lambda-creation"
+    v. To apply the plan type **terraform apply "aws-ec2-s3-lambda-creation"**
     
     vi. Just after this you will see the EC2 instance, S3 bucket and Lambda function being created.
     
@@ -215,7 +215,7 @@ Below are the steps to setup the enviroment and run the models:
 
 -  **Delete all the resources**:
 
-    i. To Delete all the resources type on powershell terraform destroy. This will delete all the resources.
+    i. To Delete all the resources type on powershell **terraform destroy**. This will delete all the resources.
 
 
 ## Credits
