@@ -73,6 +73,8 @@ Below are the steps to setup the enviroment and run the models:
 
 ### Step 3 - Writing the code the create resources
 
+-  **Creating required files**:  We will create main.tf and variable.tf to place all the details. All the code provided below will be present in main.tf.
+
 -  **Initializing the code**:  We will use below code to initialize the code.
 
 ```go
@@ -166,7 +168,7 @@ Below are the steps to setup the enviroment and run the models:
     }
 ```
 
--  **Creating Lambda Function**: Lambda Function is created using simple python code as below. 
+-  **Creating Lambda Function code**: Lambda Function is created using simple python code as below. 
 
 ```python
     import json
@@ -179,79 +181,44 @@ Below are the steps to setup the enviroment and run the models:
         }
 ```
 
-### Step 4 - Building the code using CodePipeline
-    
--  **Source Stage**:
-    
-    i. Navigate to CodePipeline.
-    
-    ii. Click on create new pipeline. Provide the name of the pipeline and click next.
-    
-    iii. Under Source provider select "GitHub (Version 2)". Then select the connection, Repository name, Branch name and click next.
-    
-https://user-images.githubusercontent.com/56908240/220592891-0cb7cc28-3546-42f3-a21e-d378027ec09d.mp4
+-  **Creating Lambda Function in AWS**: Lambda Function is created using simple code as below. 
 
-    
--  **Build Stage**:
-    
-    i. In the build provider select CodeBuild and either click on create Project if you donot have a project or select the one from dropdown if already created .
-    
-    ii. If you clicked on Create project then select Managed Image, Ubuntu Operating system, Standard runtime, choose the latest version of the image, choose new service and click on continue. 
-    
-    iii. In this process a file named Buildspec.yml would be required. It contains shell commands to be run before, during, and after build process. We have provided a basic buildspec.yaml in this repo as well. This file must be present in the Root Directory of the repo.
-    
-    iv. Select Single option and click next
-    
-https://user-images.githubusercontent.com/56908240/220592944-15927a1b-96dd-45a0-afca-a74009b262ec.mp4
+```go
+    resource "aws_lambda_function" "lambda" {
+      function_name = "welcome"
+      filename         = data.archive_file.zip.output_path
+      source_code_hash = data.archive_file.zip.output_base64sha256
+      role    = aws_iam_role.iam_for_lambda.arn
+      handler = "welcome.lambda_handler"
+      runtime = "python3.7"
+    }
+```
 
-
--  **Deploy Stage**: 
+### Step 4 - Implementation of terraform code
     
-    i. Select Amazon S3 in deploy stage and the name of the bucket.
+-  **Implementation**:
     
-    ii. Check the " Extract File before Deploy " button as well. 
+    i. Open microsoft powershell.
     
-    iii. Click next and the pipeline will be deployed.
-
-https://user-images.githubusercontent.com/56908240/220593038-9369c12c-7806-4319-b517-5be38a2f2037.mp4
-
-
-### Step 5 - Integrating and Delivering the updated code
-
--  **Check if the code is working**: 
+    ii. Navigate to C:\terraform.
     
-    i. Goto Amazon S3 bucket and select the bucket. Goto Properties and go to the bottom and click on "Static website Hosting" URL.
+    iii. To initialize type terraform init
     
-    ii. Verify if the page is loading perfectly
+    iv. To create a plan type terraform plan -out aws-ec2-s3-lambda-creation
     
+    v. To apply the plan type terraform apply "aws-ec2-s3-lambda-creation"
     
--  **Updating the code in Repo**: 
-    
-    i. Now goto the Repo and update index.html
-    
-    ii. Commit the code and push it to the root directory.
-    
-    iii. Verify if the CodePipeline is running.
-    
-    iv. Now click on "Static website Hosting" URL again and verify the changes.
+    vi. Just after this you will see the EC2 instance, S3 bucket and Lambda function being created.
     
     
 ### Step 6 - Deleting the resources(Optional)
 
 -  **Delete all the resources**:
 
-    i. Delete the Pipeline created for the site.
-    
-    ii. Delete S3 bucket created to host the website.
-    
-    iii. If no further pipelines are required, delete the S3 bucket created for codepipelines as well.
-    
-    iv. Delete the connection created with GitHub.
-    
-    v. Delete the CodeBuild Project that were created
+    i. To Delete all the resources type on powershell terraform destroy. This will delete all the resources.
 
 
 ## Credits
-1. [Build a CI/CD pipeline on AWS](https://medium.com/nerd-for-tech/build-a-ci-cd-pipeline-on-aws-f806e427db22)
-2. [Simple CI/CD pipeline with AWS CodePipeline](https://osusarak.medium.com/ci-cd-with-aws-codepipeline-d8d0538a52f2#:~:text=CI%2FCD%20is%20one%20of,is%2C%20CI%2FCD%20pipeline)
-3. [About Us page](https://www.w3schools.com/howto/howto_css_about_page.asp)
+1. [Set up Terraform and AWS CLI](https://medium.com/@shanmorton/set-up-terraform-tf-and-aws-cli-build-a-simple-ec2-1643bcfcb6fe)
+2. [How to Create an S3 Bucket with Terraform](https://blog.purestorage.com/purely-informational/how-to-create-an-s3-bucket-with-terraform/)
+3. [Terraform Lambda Example Create and Deploy - AWS](https://www.middlewareinventory.com/blog/aws-lambda-terraform/)
