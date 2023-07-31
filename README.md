@@ -75,7 +75,7 @@ Below are the steps to setup the enviroment and run the models:
 
 -  **Initializing the code**:  We will use below code to initialize the code.
 
-```go
+```go`
     terraform {
       required_providers {
         aws = {
@@ -131,7 +131,7 @@ Below are the steps to setup the enviroment and run the models:
 -  **Disabling Public access**: Bucket public access will be disables using the code below. 
 
 ```go
-      resource "aws_s3_bucket_public_access_block" "my_protected_bucket_access" {
+    resource "aws_s3_bucket_public_access_block" "my_protected_bucket_access" {
       bucket = aws_s3_bucket.my_protected_bucket.id
       # Block public access
       block_public_acls   = true
@@ -144,7 +144,7 @@ Below are the steps to setup the enviroment and run the models:
 -  **Creating IAM policy document for Lambda function**: IAM policy for lambda will be created using the code below. 
 
 ```go
-      data "aws_iam_policy_document" "policy" {
+    data "aws_iam_policy_document" "policy" {
       statement {
         sid    = ""
         effect = "Allow"
@@ -160,7 +160,7 @@ Below are the steps to setup the enviroment and run the models:
 -  **Creating IAM policy using JSON**: IAM policy in form of a JSON will be created using the code below. 
 
 ```go
-      resource "aws_iam_role" "iam_for_lambda" {
+    resource "aws_iam_role" "iam_for_lambda" {
       name               = "iam_for_lambda"
       assume_role_policy = data.aws_iam_policy_document.policy.json
     }
