@@ -75,7 +75,7 @@ Below are the steps to setup the enviroment and run the models:
 
 -  **Initializing the code**:  We will use below code to initialize the code.
 
-```go`
+```json
     terraform {
       required_providers {
         aws = {
