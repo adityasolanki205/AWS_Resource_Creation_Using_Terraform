@@ -53,7 +53,7 @@ Below are the steps to setup the enviroment and run the models:
     
     vi. Click on the .exe file and wait.
     
-    vii. Open windows powershell and type "terraform -help". If all the terraform commands appear on the screen, terraform has been installed successfully otherwise need to revisit the steps above.
+    vii. Open windows powershell and type "terraform -help". If all the terraform commands appear on the screen, terraform has been installed successfully otherwise please revisit the steps above.
 
 
 ### Step 2 - AWS Command Line Interface installation
@@ -66,26 +66,45 @@ Below are the steps to setup the enviroment and run the models:
     
     iii. Open command prompt and run the command "aws configure"
     
-    iv. Then it will ask for AWS Access key ID and Secret Access Key. If you have one please use it else visit [This page](https://docs.aws.amazon.com/powershell/latest/userguide/pstools-appendix-sign-up.html) to create one.
+    iv. Then it will ask for AWS Access key ID and Secret Access Key. If you have one please use it else visit [this page](https://docs.aws.amazon.com/powershell/latest/userguide/pstools-appendix-sign-up.html) to create one. The user mus have EC2 Full access, S3 full access, VPC Full access, Lambda Full Access, IAM Full Access.
     
     v. Now the setup is done.
 
 
-### Step 3 - Connecting AWS with GitHub
+### Step 3 - Writing the code the create resources
 
--  **Creating connections**:  
+-  **Initializing the code**:  We will use below code to initialize the code.
 
-    i. Goto CodePipelines.
+```go
+    terraform {
+      required_providers {
+        aws = {
+          source  = "hashicorp/aws"
+          version = "~> 3.27"
+        }
+      }
+    }
+
+    provider "aws" {
+      profile = "default"
+      region  = "ap-south-1"
+    }
+```
     
-    ii. Navigate to Settings and click on connections.
-    
-    iii. Click "Create Connection".
-    
-    iv. Select Private or Enterprise Github and click on Connect to Github.
-    
-    v. Select required repo to be connected and click connect.
-    
-https://user-images.githubusercontent.com/56908240/220592761-4598906a-2532-4408-84f1-ca29f0f27c93.mp4
+ 
+-  **Creating EC2 Instance**: EC2 will be created using the code below
+
+```go
+    resource "aws_instance" "vm-web" {
+      ami           = "ami-0ded8326293d3201b"
+      instance_type = "t2.micro"
+
+      tags = {
+        Name = "server for web"
+        Env = "dev"
+      }
+    }
+```
 
 
 ### Step 4 - Building the code using CodePipeline
