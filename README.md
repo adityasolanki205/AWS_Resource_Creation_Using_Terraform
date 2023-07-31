@@ -92,7 +92,7 @@ Below are the steps to setup the enviroment and run the models:
 ```
     
  
--  **Creating EC2 Instance**: EC2 will be created using the code below
+-  **Creating EC2 Instance**: EC2 will be created using the code below. Also please use the correct ami for the instance. 
 
 ```go
     resource "aws_instance" "vm-web" {
@@ -106,6 +106,78 @@ Below are the steps to setup the enviroment and run the models:
     }
 ```
 
+
+-  **Creating S3 Bucket**: S3 will be created using the code below. 
+
+```go
+    resource "aws_s3_bucket" "my_protected_bucket" {
+      bucket = var.bucket_name
+    }
+```
+
+
+-  **Disabling Bucket versioning**: Bucket Version disabling will be done using the code below. 
+
+```go
+    resource "aws_s3_bucket_versioning" "my_protected_bucket_versioning" {
+      bucket = aws_s3_bucket.my_protected_bucket.id
+      versioning_configuration {
+        status = "Disabled"
+      }
+    }
+```
+
+
+-  **Disabling Public access**: Bucket public access will be disables using the code below. 
+
+```go
+      resource "aws_s3_bucket_public_access_block" "my_protected_bucket_access" {
+      bucket = aws_s3_bucket.my_protected_bucket.id
+      # Block public access
+      block_public_acls   = true
+      block_public_policy = true
+      ignore_public_acls = true
+      restrict_public_buckets = true
+    }
+```
+
+-  **Creating IAM policy document for Lambda function**: IAM policy for lambda will be created using the code below. 
+
+```go
+      data "aws_iam_policy_document" "policy" {
+      statement {
+        sid    = ""
+        effect = "Allow"
+        principals {
+          identifiers = ["lambda.amazonaws.com"]
+          type        = "Service"
+        }
+        actions = ["sts:AssumeRole"]
+      }
+    }
+```
+
+-  **Creating IAM policy using JSON**: IAM policy in form of a JSON will be created using the code below. 
+
+```go
+      resource "aws_iam_role" "iam_for_lambda" {
+      name               = "iam_for_lambda"
+      assume_role_policy = data.aws_iam_policy_document.policy.json
+    }
+```
+
+-  **Creating Lambda Function**: Lambda Function is created using simple python code as below. 
+
+```python
+    import json
+
+    def lambda_handler(event, context):
+        print("Hello")
+        return {
+            'statusCode': 200,
+            'body': json.dumps('Hello from Lambda!')
+        }
+```
 
 ### Step 4 - Building the code using CodePipeline
     
